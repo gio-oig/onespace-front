@@ -12,7 +12,10 @@
 					>
 						<img
 							v-if="user.image"
-							:src="'http://localhost:5000/uploads/images/' + user.image"
+							:src="
+								'https://arcane-bayou-45011.herokuapp.com/uploads/images/' +
+									user.image
+							"
 							alt=""
 						/>
 						<img v-else src="@/assets/unknown.jpg" alt="" />

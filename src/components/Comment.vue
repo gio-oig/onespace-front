@@ -4,7 +4,10 @@
 			<div class="comment-author-avatar">
 				<img
 					v-if="comment.author.image"
-					:src="'http://localhost:5000/uploads/images/' + comment.author.image"
+					:src="
+						'https://arcane-bayou-45011.herokuapp.com/uploads/images/' +
+							comment.author.image
+					"
 					alt=""
 				/>
 				<img v-else src="@/assets/unknown.jpg" alt="" />

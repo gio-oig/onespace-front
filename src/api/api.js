@@ -2,7 +2,7 @@ import axios from 'axios';
 
 let Api = axios.create({
 	baseURL:
-		process.env.NODE_ENV === 'production'
+		process.env.NODE_ENV !== 'production'
 			? 'https://arcane-bayou-45011.herokuapp.com/api'
 			: 'http://localhost:5000/api',
 });
