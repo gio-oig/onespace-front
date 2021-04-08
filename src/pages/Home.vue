@@ -53,7 +53,7 @@ export default {
 		postApi
 			.getPosts()
 			.then((result) => {
-				console.log(result);
+				// console.log(result);
 				store.commit('setPosts', result.data);
 			})
 			.catch((err) => {

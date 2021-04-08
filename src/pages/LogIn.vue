@@ -35,13 +35,14 @@ export default {
 		});
 
 		const handleClick = () => {
-			console.log('object');
 			user
 				.login(form)
 				.then((result) => {
-					console.log('result: ' + result);
-					localStorage.setItem('auth', true);
-					store.commit('setUser', result.data);
+					const { user, token } = result.data;
+					console.log(user);
+					console.log(token);
+					localStorage.setItem('token', token);
+					store.commit('setUser', user);
 					router.push('/');
 				})
 				.catch((err) => {

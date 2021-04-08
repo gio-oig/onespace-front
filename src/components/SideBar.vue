@@ -15,7 +15,7 @@ export default {
 		const users = ref({});
 		// prettier-ignore
 		userApi.getAllUsers().then((result) => {
-			console.log(result)
+			// console.log(result)
 			users.value = result.data; 
 		}).catch((err) => {
 			console.log(err)

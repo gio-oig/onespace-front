@@ -14,21 +14,23 @@ export default {
 	setup() {
 		const store = useStore();
 		const router = useRouter();
-		user.isLoggedin().then((res) => {
-			if (res.data) {
-				localStorage.setItem('auth', true);
-				store.commit('setUser', res.data);
-				console.log(res);
-			} else {
-				localStorage.removeItem('auth');
+		user
+			.isLoggedin()
+			.then((res) => {
+				if (res.data) {
+					store.commit('setUser', res.data.user);
+					console.log('first load:');
+					console.log(res.data.user);
+				} else {
+					localStorage.removeItem('auth');
+					router.push('/login');
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+				localStorage.removeItem('token');
 				router.push('/login');
-			}
-		});
-		// .catch((err) => {
-		// 	console.log(err);
-		// 	localStorage.removeItem('auth');
-		// 	router.push('/login');
-		// });
+			});
 	},
 };
 </script>

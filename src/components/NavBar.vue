@@ -43,7 +43,7 @@ export default {
 		const handleLogout = () => {
 			userApi.logout().then(() => {
 				store.commit('setUser', null);
-				localStorage.removeItem('auth');
+				localStorage.removeItem('token');
 				router.push('/login');
 			});
 		};
@@ -53,7 +53,7 @@ export default {
 		};
 
 		const user = computed(() => store.state.user);
-		console.log(user.value);
+		// console.log(user.value);
 		return {
 			user,
 			handleLogout,

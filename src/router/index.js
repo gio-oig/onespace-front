@@ -30,7 +30,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-	const auth = localStorage.getItem('auth');
+	const auth = localStorage.getItem('token');
 	// Not logged into a guarded route?
 	if (to.meta.requiresAuth && !auth) next({ name: 'login' });
 	// Logged in for an auth route
