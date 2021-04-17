@@ -10,15 +10,7 @@
 						class="user-profile__img-container"
 						@click="toggleProfileDropdown"
 					>
-						<img
-							v-if="user.image"
-							:src="
-								'https://arcane-bayou-45011.herokuapp.com/uploads/images/' +
-									user.image
-							"
-							alt=""
-						/>
-						<img v-else src="@/assets/unknown.jpg" alt="" />
+						<avatar :image="user.image" />
 					</div>
 					<div class="dropdown" :class="{ active: activeDropdown }">
 						<div @click="handleLogout">logout</div>
@@ -35,8 +27,10 @@ import { useStore } from 'vuex';
 
 import userApi from '@/api/user';
 import { useRouter } from 'vue-router';
+import Avatar from './shared/Avatar.vue';
 export default {
 	name: 'NavBar',
+	components: { Avatar },
 	setup() {
 		const store = useStore();
 		const router = useRouter();
@@ -120,6 +114,7 @@ nav {
 	/* width: 100px; */
 	display: none;
 	bottom: -50px;
+	right: 0;
 	background-color: #fff;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 	cursor: pointer;
@@ -127,5 +122,11 @@ nav {
 
 .active {
 	display: block;
+}
+
+@media (max-width: 450px) {
+	.nav-search {
+		width: 100%;
+	}
 }
 </style>

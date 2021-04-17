@@ -21,5 +21,6 @@ button {
 	background-color: teal;
 	cursor: pointer;
 	outline: none;
+	color: #fff;
 }
 </style>

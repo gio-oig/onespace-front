@@ -1,6 +1,8 @@
 <template>
 	<nav-bar />
-	<router-view></router-view>
+	<div id="content">
+		<router-view></router-view>
+	</div>
 </template>
 
 <script>
@@ -8,10 +10,25 @@ import NavBar from './components/NavBar.vue';
 import user from './api/user';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+// import { io } from 'socket.io-client';
+
 export default {
 	name: 'App',
 	components: { NavBar },
 	setup() {
+		// const socket = io('http://localhost:5000', {
+		// 	query: {
+		// 		x: 42,
+		// 	},
+		// });
+		// socket.emit('createPost', () => {
+		// 	console.log('socket');
+		// });
+
+		// socket.onAny((event, ...args) => {
+		// 	console.log(event, args);
+		// });
+
 		const store = useStore();
 		const router = useRouter();
 		user
@@ -27,7 +44,7 @@ export default {
 				}
 			})
 			.catch((err) => {
-				console.log(err);
+				console.log(err.message);
 				localStorage.removeItem('token');
 				router.push('/login');
 			});
@@ -48,8 +65,8 @@ export default {
 	/* text-align: center; */
 	color: #2c3e50;
 	/* margin-top: 60px; */
-	/* height: 100vh; */
-	background-color: #ffffff;
+	min-height: 100vh;
+	background-color: #f1f1f1;
 }
 
 li {

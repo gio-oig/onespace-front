@@ -3,12 +3,7 @@
 		<div>
 			<div class="post">
 				<div class="img-container">
-					<img
-						v-if="post.author.image"
-						:src="'http://localhost:5000/uploads/images/' + post.author.image"
-						alt=""
-					/>
-					<img v-else src="@/assets/unknown.jpg" alt="" />
+					<avatar :image="post.author.image" />
 				</div>
 				<div class="post_content_container">
 					<div class="post-author">{{ post.author.name }}</div>
@@ -29,14 +24,17 @@
 					</div>
 				</div>
 				<div class="post-menu">
-					<img
-						:src="postMenuDropdown"
-						alt=""
-						@click="postMenuToggle = !postMenuToggle"
-					/>
-					<div class="post-menu__dropdown" :class="{ show: postMenuToggle }">
-						<li @click="deletePost">delete</li>
-					</div>
+					<template v-if="userId === post.author.id">
+						<img
+							:src="postMenuDropdown"
+							alt=""
+							@click="postMenuToggle = !postMenuToggle"
+						/>
+
+						<div class="post-menu__dropdown" :class="{ show: postMenuToggle }">
+							<li @click="deletePost">delete</li>
+						</div>
+					</template>
 					<div class="date">{{ date }}</div>
 				</div>
 			</div>
@@ -72,13 +70,14 @@ import postApi from '@/api/post.js';
 import { useStore } from 'vuex';
 
 import postMenuDropdown from '@/assets/postMenu.svg';
+import Avatar from './shared/Avatar.vue';
 
 export default {
 	name: 'Post',
 	props: {
 		post: Object,
 	},
-	components: { ReplySvg, LoveSvg, Comment },
+	components: { ReplySvg, LoveSvg, Comment, Avatar },
 	setup(props) {
 		// console.log(props.post);
 		const store = useStore();
@@ -227,6 +226,7 @@ export default {
 }
 
 .date {
+	margin-top: auto;
 	font-size: 15px;
 	color: rgb(136, 136, 136);
 }

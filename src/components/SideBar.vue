@@ -39,10 +39,20 @@ export default {
 	left: 0;
 	top: 40px;
 	border-right: 1px solid rgb(233, 233, 233);
+	background-color: #fff;
 }
 @media (max-width: 1000px) {
 	.sidebar {
-		display: none;
+		/* display: none; */
+		/* position: relative; */
+		position: static;
+		width: 100%;
+		height: auto;
+		flex-direction: row;
+		margin: 5px 0;
+		border-radius: 5px;
+		overflow-y: hidden;
+		overflow-x: auto;
 	}
 }
 </style>
