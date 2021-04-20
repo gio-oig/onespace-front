@@ -10,21 +10,12 @@ import NavBar from './components/NavBar.vue';
 import user from './api/user';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-// import { io } from 'socket.io-client';
-
+import { socket } from '@/service/socket';
+// import { onBeforeUnmount } from '@vue/runtime-core';
 export default {
 	name: 'App',
 	components: { NavBar },
 	setup() {
-		// const socket = io('http://localhost:5000', {
-		// 	query: {
-		// 		x: 42,
-		// 	},
-		// });
-		// socket.emit('createPost', () => {
-		// 	console.log('socket');
-		// });
-
 		// socket.onAny((event, ...args) => {
 		// 	console.log(event, args);
 		// });
@@ -36,8 +27,9 @@ export default {
 			.then((res) => {
 				if (res.data) {
 					store.commit('setUser', res.data.user);
-					console.log('first load:');
-					console.log(res.data.user);
+					socket.emit('join', { userId: res.data.user.id });
+					socket.userId = res.data.user.id;
+					// console.log(socket.userId);
 				} else {
 					localStorage.removeItem('auth');
 					router.push('/login');
@@ -71,5 +63,10 @@ export default {
 
 li {
 	list-style: none;
+}
+
+a {
+	text-decoration: none;
+	color: #2c3e50;
 }
 </style>

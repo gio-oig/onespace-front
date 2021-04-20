@@ -4,12 +4,18 @@ const store = createStore({
 	state() {
 		return {
 			user: null,
+			activeUsers: [],
 			posts: [],
+			messengerStatus: false,
+			chattingWith: '',
 		};
 	},
 	mutations: {
 		setUser(state, userData) {
 			state.user = userData;
+		},
+		setActiveUsers(state, usersData) {
+			state.activeUsers = usersData;
 		},
 		setPosts(state, posts) {
 			state.posts = posts;
@@ -54,6 +60,12 @@ const store = createStore({
 		},
 		deletePost(state, postId) {
 			state.posts = state.posts.filter((post) => post.id !== postId);
+		},
+		setMessengerStatus(state) {
+			state.messengerStatus = !state.messengerStatus;
+		},
+		setChattingWith(state, userId) {
+			state.chattingWith = userId;
 		},
 	},
 });

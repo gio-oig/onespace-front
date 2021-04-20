@@ -16,7 +16,7 @@
 							@click="handleLike"
 							:class="{ liked: post.likes.includes(userId) }"
 						>
-							<love-svg /> {{ post.likes.length }}
+							<love-svg /> {{ post.likes.length > 0 ? post.likes.length : '' }}
 						</div>
 						<div class="reply" @click="reply = !reply" v-if="post.comments">
 							<reply-svg /> {{ post.comments.length }}
@@ -45,7 +45,7 @@
 					v-model="content.content"
 				/>
 				<div class="send-comment" @click="createComment">
-					SEND
+					<img :src="sendSVG" alt="" />
 				</div>
 			</div>
 		</div>
@@ -65,12 +65,16 @@ import LoveSvg from '../components/svg/LoveSvg.vue';
 import ReplySvg from '../components/svg/ReplySvg.vue';
 import Comment from './Comment.vue';
 
-import commentApi from '@/api/comment.js';
+// import commentApi from '@/api/comment.js';
 import postApi from '@/api/post.js';
 import { useStore } from 'vuex';
 
 import postMenuDropdown from '@/assets/postMenu.svg';
 import Avatar from './shared/Avatar.vue';
+
+import { socket } from '@/service/socket';
+
+import sendSVG from '@/assets/post.svg';
 
 export default {
 	name: 'Post',
@@ -84,20 +88,27 @@ export default {
 		const content = reactive({ content: '' });
 
 		const createComment = () => {
-			commentApi
-				.create({
-					content: content.content,
-					userId: store.state.user.id,
-					postId: props.post.id,
-				})
-				.then((result) => {
-					console.log(result);
-					store.commit('setComment', result.data);
-					content.content = '';
-				})
-				.catch((err) => {
-					console.log(err);
-				});
+			// commentApi
+			// 	.create({
+			// 		content: content.content,
+			// 		userId: store.state.user.id,
+			// 		postId: props.post.id,
+			// 	})
+			// 	.then((result) => {
+			// 		console.log(result);
+			// 		store.commit('setComment', result.data);
+			// 		content.content = '';
+			// 	})
+			// 	.catch((err) => {
+			// 		console.log(err);
+			// 	});
+			socket.emit('createComment', {
+				content: content.content,
+				userId: store.state.user.id,
+				postId: props.post.id,
+			});
+
+			content.content = '';
 		};
 
 		const handleLike = () => {
@@ -142,6 +153,7 @@ export default {
 			userId,
 			date: new Date(props.post.createdAt).toLocaleDateString(),
 			deletePost,
+			sendSVG,
 		};
 	},
 };
@@ -167,10 +179,16 @@ export default {
 }
 .write-comment .send-comment {
 	padding: 5px 10px;
+	display: flex;
 	cursor: pointer;
 	border-radius: 5px;
-	background-color: #f7f9fa;
+	transition: 0.3s ease;
 }
+
+.send-comment:hover {
+	background-color: #51c4d3;
+}
+
 .post-container {
 	background-color: #fff;
 	/* max-width: 600px; */

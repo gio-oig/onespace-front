@@ -3,11 +3,19 @@
 		<div class="form">
 			<div class="form__title">LogIn</div>
 			<div>
-				<custom-input type="email" label="email" v-model:value="form.email" />
+				<custom-input
+					type="email"
+					label="email"
+					v-model:value="form.email"
+					@click="clearErrors"
+					:error="errors.email"
+				/>
 				<custom-input
 					type="password"
 					label="password"
 					v-model:value="form.password"
+					@click="clearErrors"
+					:error="errors.password"
 				/>
 			</div>
 			<custom-button text="Login" @click="handleClick" />
@@ -23,6 +31,8 @@ import { reactive } from '@vue/reactivity';
 import user from '../api/user';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import { socket } from '@/service/socket';
+
 export default {
 	components: { CustomInput, CustomButton },
 	name: 'LogIn',
@@ -34,15 +44,31 @@ export default {
 			password: '',
 		});
 
+		const errors = reactive({
+			email: '',
+			password: '',
+		});
+
 		const handleClick = () => {
+			const error = checkErrors();
+
+			if (error) return;
+
+			console.log('pass');
+
+			// const {email, password} = form;
+			// if(!email && !password) {
+			// 	errors
+			// }
 			user
 				.login(form)
 				.then((result) => {
 					const { user, token } = result.data;
-					console.log(user);
-					console.log(token);
+					// console.log(user);
+					// console.log(token);
 					localStorage.setItem('token', token);
 					store.commit('setUser', user);
+					socket.emit('join', { userId: user.id });
 					router.push('/');
 				})
 				.catch((err) => {
@@ -52,9 +78,29 @@ export default {
 		// watch(username, (newVal) => {
 		// 	console.log(newVal);
 		// });
+
+		const checkErrors = () => {
+			let error = false;
+			for (const key in form) {
+				if (form[key] === '') {
+					error = true;
+					errors[key] = `please, type ${key}`;
+				}
+			}
+			return error;
+		};
+
+		const clearErrors = () => {
+			for (const key in errors) {
+				errors[key] = '';
+			}
+		};
+
 		return {
 			handleClick,
 			form,
+			errors,
+			clearErrors,
 		};
 	},
 };

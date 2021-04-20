@@ -10,39 +10,52 @@
 				>
 				</textarea>
 				<div class="writer-container__tools">
-					<div>
-						<emojy-svg />
+					<div class="emoji-hover">
+						<emojy-svg @click="emojiToggle = !emojiToggle" />
 					</div>
-					<div @click="handleSubmit">POST</div>
+					<div class="emoji-hover" @click="handleSubmit">
+						<img :src="postSvg" alt="" />
+					</div>
 					<!-- <div>photo</div> -->
 				</div>
 			</div>
+			<emoji v-if="emojiToggle" @emoji="setEmoji" />
 			<post v-for="post in posts" :key="post.id" :post="post" />
 			<!-- <post /> -->
 		</div>
 	</div>
+	<messanger v-if="isActive" />
 </template>
 
 <script>
-import { reactive } from '@vue/reactivity';
+import { reactive, ref } from '@vue/reactivity';
 import { useRouter } from 'vue-router';
 import user from '../api/user';
 import postApi from '../api/post';
 import Post from '../components/Post.vue';
 import SideBar from '../components/SideBar.vue';
 import EmojySvg from '../components/svg/EmojySvg.vue';
-import { computed } from '@vue/runtime-core';
+import { computed, onBeforeUnmount } from '@vue/runtime-core';
 import { useStore } from 'vuex';
 
+import Messanger from '@/components/messanger/Messanger.vue';
+
+import { socket } from '@/service/socket';
+import Emoji from '../components/Emoji.vue';
+
+import postSvg from '../assets/post.svg';
+
 export default {
-	components: { SideBar, Post, EmojySvg },
+	components: { SideBar, Post, EmojySvg, Messanger, Emoji },
 	name: 'Home',
 	setup() {
 		const router = useRouter();
 		const store = useStore();
+
 		const newPost = reactive({ content: '' });
-		// const posts = ref([{ content: 'post 1' }, { content: 'post 2' }]);
+		const emojiToggle = ref(false);
 		const posts = computed(() => store.state.posts);
+
 		const logout = () => {
 			user.logout().then(() => {
 				localStorage.removeItem('auth');
@@ -69,7 +82,21 @@ export default {
 				.catch((err) => {
 					console.log(err);
 				});
+			// socket.emit('createPost', { content: newPost.content });
 			newPost.content = '';
+		};
+
+		socket.on('newComment', (comment) => {
+			console.log(comment);
+			store.commit('setComment', comment);
+		});
+
+		onBeforeUnmount(() => {
+			socket.off('newComment');
+		});
+
+		const setEmoji = (data) => {
+			newPost.content = newPost.content + data;
 		};
 
 		return {
@@ -78,6 +105,10 @@ export default {
 			newPost,
 			handleSubmit,
 			posts,
+			isActive: computed(() => store.state.messengerStatus),
+			setEmoji,
+			emojiToggle,
+			postSvg,
 		};
 	},
 };
@@ -146,9 +177,23 @@ export default {
 
 .writer-container__tools {
 	display: flex;
-	/* flex: 1; */
+	justify-content: space-between;
 }
 .writer-container__tools > div {
-	flex: 1;
+	/* flex: 1; */
 }
+
+.emoji-hover {
+	display: flex;
+	padding: 3px 5px;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: 0.3s ease;
+}
+
+.emoji-hover:hover {
+	background-color: #51c4d3;
+}
+
+/* EMOJI  */
 </style>

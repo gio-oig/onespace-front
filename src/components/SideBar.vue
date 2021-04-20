@@ -1,6 +1,11 @@
 <template>
 	<div class="sidebar">
-		<mini-user v-for="user in users" :user="user" :key="user.id" />
+		<mini-user
+			v-for="user in users"
+			:user="user"
+			:key="user.id"
+			@handleClick="handleUserClick"
+		/>
 	</div>
 </template>
 
@@ -8,11 +13,18 @@
 import MiniUser from './shared/MiniUser.vue';
 import userApi from '@/api/user.js';
 import { ref } from '@vue/reactivity';
+
+import { socket } from '@/service/socket';
+import { useStore } from 'vuex';
+import { onBeforeUnmount } from '@vue/runtime-core';
+// import { onBeforeUnmount } from '@vue/runtime-core';
+
 export default {
 	components: { MiniUser },
 	name: 'SideBar',
 	setup() {
-		const users = ref({});
+		const store = useStore();
+		const users = ref([]);
 		// prettier-ignore
 		userApi.getAllUsers().then((result) => {
 			// console.log(result)
@@ -20,8 +32,31 @@ export default {
 		}).catch((err) => {
 			console.log(err)
 		});
+
+		socket.on('onlineUsers', ({ onlineUsers }) => {
+			console.log('onlineUsers');
+			console.log(onlineUsers);
+			store.commit('setActiveUsers', onlineUsers);
+		});
+
+		onBeforeUnmount(() => {
+			socket.off('onlineUsers');
+		});
+
+		// const handleOnlineUsers = (args) => {
+		// 	console.log(args);
+		// };
+
+		const handleUserClick = (userId) => {
+			// socket.emit('sendMessage', userId);
+			store.commit('setMessengerStatus');
+			// store.commit('setChattingWith', userId);
+			console.log(userId);
+		};
+
 		return {
 			users,
+			handleUserClick,
 		};
 	},
 };

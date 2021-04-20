@@ -2,21 +2,27 @@
 	<div class="input-wrapper">
 		<label class="label">{{ label }}</label>
 		<input
-			@click="focus = !focus"
+			@click="$emit('click')"
 			:type="type"
 			:value="value"
 			@input="$emit('update:value', $event.target.value)"
 		/>
+
+		<div v-if="error">
+			{{ error }}
+		</div>
 	</div>
 </template>
 
 <script>
 export default {
 	name: 'CustomInput',
+	emits: ['click', 'update:value'],
 	props: {
 		label: String,
 		value: String,
 		type: String,
+		error: String,
 	},
 };
 </script>
@@ -45,7 +51,7 @@ input:focus ~ .label {
 
 .input-wrapper input {
 	width: 100%;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 	border-radius: 10px;
 	background-color: #00a18918;
 	border: 2px solid transparent;

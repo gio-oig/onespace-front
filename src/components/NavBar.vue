@@ -28,6 +28,9 @@ import { useStore } from 'vuex';
 import userApi from '@/api/user';
 import { useRouter } from 'vue-router';
 import Avatar from './shared/Avatar.vue';
+
+import { socket } from '@/service/socket';
+
 export default {
 	name: 'NavBar',
 	components: { Avatar },
@@ -39,6 +42,7 @@ export default {
 
 		const handleLogout = () => {
 			userApi.logout().then(() => {
+				socket.emit('logout', { userId: store.state.user.id });
 				store.commit('setUser', null);
 				localStorage.removeItem('token');
 				router.push('/login');
