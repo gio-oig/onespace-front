@@ -11,6 +11,6 @@ export default {
 		return Api.post('post/like', { userId, postId });
 	},
 	deletePost({ postId }) {
-		return Api.delete('post/delete/' + postId, { random: 'random' });
+		return Api.delete('post/delete/' + postId);
 	},
 };

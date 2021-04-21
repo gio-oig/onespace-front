@@ -10,7 +10,7 @@ let Api = axios.create({
 // Access-Control-Allow-Credentials: true
 // axios.defaults.headers['Access-Control-Allow-Origin'] = '*';
 
-// Api.defaults.withCredentials = true;
+Api.defaults.withCredentials = true;
 Api.defaults.headers.common = {
 	Authorization: localStorage.getItem('token') || '',
 };

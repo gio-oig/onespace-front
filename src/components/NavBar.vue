@@ -30,6 +30,8 @@ import { useRouter } from 'vue-router';
 import Avatar from './shared/Avatar.vue';
 
 import { socket } from '@/service/socket';
+import Api from '../api/api';
+// import axios from 'axios';
 
 export default {
 	name: 'NavBar',
@@ -45,6 +47,9 @@ export default {
 				socket.emit('logout', { userId: store.state.user.id });
 				store.commit('setUser', null);
 				localStorage.removeItem('token');
+				// axios.setHeader('Authorization', null);
+				delete Api.defaults.headers.common['Authorization'];
+				// this.$axios;
 				router.push('/login');
 			});
 		};

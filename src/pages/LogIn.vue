@@ -32,6 +32,7 @@ import user from '../api/user';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { socket } from '@/service/socket';
+import Api from '../api/api';
 
 export default {
 	components: { CustomInput, CustomButton },
@@ -69,6 +70,7 @@ export default {
 					localStorage.setItem('token', token);
 					store.commit('setUser', user);
 					socket.emit('join', { userId: user.id });
+					Api.defaults.headers.common['Authorization'] = token;
 					router.push('/');
 				})
 				.catch((err) => {
