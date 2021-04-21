@@ -19,24 +19,30 @@ export default {
 		// socket.onAny((event, ...args) => {
 		// 	console.log(event, args);
 		// });
-
+		// axios
+		// 	.get('http://localhost:5000/api/user/is-loggedin')
+		// 	.then((result) => {
+		// 		console.log(result);
+		// 	})
+		// 	.catch((err) => {
+		// 		if (err.response) {
+		// 			console.log(err.response); // client received an error response (5xx, 4xx)
+		// 			console.log(err.request);
+		// 		}
+		// 	});
 		const store = useStore();
 		const router = useRouter();
 		user
 			.isLoggedin()
 			.then((res) => {
-				if (res.data) {
-					store.commit('setUser', res.data.user);
-					socket.emit('join', { userId: res.data.user.id });
-					socket.userId = res.data.user.id;
-					// console.log(socket.userId);
-				} else {
-					localStorage.removeItem('auth');
-					router.push('/login');
-				}
+				console.log(res);
+				store.commit('setUser', res.data.user);
+				socket.emit('join', { userId: res.data.user.id || 0 });
+				socket.userId = res.data.user.id;
+				console.log(socket.userId);
 			})
 			.catch((err) => {
-				console.log(err.message);
+				console.log(err.response);
 				localStorage.removeItem('token');
 				router.push('/login');
 			});

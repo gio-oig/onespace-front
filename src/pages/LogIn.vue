@@ -72,7 +72,7 @@ export default {
 					router.push('/');
 				})
 				.catch((err) => {
-					console.log(err);
+					console.log(err.response.data.message);
 				});
 		};
 		// watch(username, (newVal) => {

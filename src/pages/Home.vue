@@ -5,7 +5,7 @@
 			<div class="writer-container">
 				<textarea
 					rows="3"
-					placeholder="What's in your mind?"
+					:placeholder="`What's in your mind, ${user?.name}?`"
 					v-model="newPost.content"
 				>
 				</textarea>
@@ -99,9 +99,11 @@ export default {
 			newPost.content = newPost.content + data;
 		};
 
+		console.log(store.state.user);
+
 		return {
 			// checkIfLoggedIn,
-			logout,
+			user: computed(() => store.state.user),
 			newPost,
 			handleSubmit,
 			posts,
@@ -109,6 +111,7 @@ export default {
 			setEmoji,
 			emojiToggle,
 			postSvg,
+			logout,
 		};
 	},
 };
