@@ -42,7 +42,7 @@ export default {
 				console.log(socket.userId);
 			})
 			.catch((err) => {
-				console.log(err.response);
+				console.log(err.response.message);
 				localStorage.removeItem('token');
 				router.push('/login');
 			});

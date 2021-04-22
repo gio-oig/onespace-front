@@ -55,12 +55,6 @@ export default {
 
 			if (error) return;
 
-			console.log('pass');
-
-			// const {email, password} = form;
-			// if(!email && !password) {
-			// 	errors
-			// }
 			user
 				.login(form)
 				.then((result) => {
@@ -73,14 +67,20 @@ export default {
 					Api.defaults.headers.common['Authorization'] = token;
 					router.push('/');
 				})
+
 				.catch((err) => {
-					console.log(err.response.data.message);
+					// check for validation errro
+					if (err.response.status === 422) {
+						const error = err.response.data.error;
+						for (let key in error) {
+							errors[key] = error[key];
+						}
+					}
+					console.log(err.response);
 				});
 		};
-		// watch(username, (newVal) => {
-		// 	console.log(newVal);
-		// });
 
+		// front end validation
 		const checkErrors = () => {
 			let error = false;
 			for (const key in form) {
@@ -92,10 +92,11 @@ export default {
 			return error;
 		};
 
-		const clearErrors = () => {
-			for (const key in errors) {
-				errors[key] = '';
-			}
+		const clearErrors = (inputFiled) => {
+			errors[inputFiled] = '';
+			// for (const key in errors) {
+			// 	errors[key] = '';
+			// }
 		};
 
 		return {

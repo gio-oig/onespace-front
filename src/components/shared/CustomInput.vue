@@ -2,7 +2,7 @@
 	<div class="input-wrapper">
 		<label class="label">{{ label }}</label>
 		<input
-			@click="$emit('click')"
+			@click="handleClick"
 			:type="type"
 			:value="value"
 			@input="$emit('update:value', $event.target.value)"
@@ -23,6 +23,11 @@ export default {
 		value: String,
 		type: String,
 		error: String,
+	},
+	methods: {
+		handleClick() {
+			this.$emit('click', this.label);
+		},
 	},
 };
 </script>

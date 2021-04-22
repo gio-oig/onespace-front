@@ -3,12 +3,26 @@
 		<div class="form">
 			<div class="form__title">Register</div>
 			<div>
-				<custom-input type="text" label="username" v-model:value="form.name" />
-				<custom-input type="email" label="email" v-model:value="form.email" />
+				<custom-input
+					type="text"
+					label="name"
+					v-model:value="form.name"
+					@click="clearErrors"
+					:error="errors.name"
+				/>
+				<custom-input
+					type="email"
+					label="email"
+					v-model:value="form.email"
+					@click="clearErrors"
+					:error="errors.email"
+				/>
 				<custom-input
 					type="password"
 					label="password"
 					v-model:value="form.password"
+					@click="clearErrors"
+					:error="errors.password"
 				/>
 				<input
 					class="custom-file-input"
@@ -49,13 +63,22 @@ export default {
 			password: '',
 		});
 
+		const errors = reactive({
+			name: '',
+			email: '',
+			password: '',
+		});
+
 		const handleImageUpload = (e) => {
-			// console.log('object');
 			form.image = e.target.files[0];
 			console.log(e.target.files);
 		};
 
 		const handleClick = () => {
+			const error = checkErrors();
+
+			if (error) return;
+
 			const formData = new FormData();
 			for (let key in form) {
 				formData.append(key, form[key]);
@@ -68,12 +91,41 @@ export default {
 					localStorage.setItem('auth', true);
 					router.push('/');
 				})
-				.catch((err) => console.log(err));
+				.catch((err) => {
+					// check for validation errro
+					if (err.response.status === 422) {
+						const error = err.response.data.error;
+						for (let key in error) {
+							errors[key] = error[key];
+						}
+					}
+					console.log(err.response);
+				});
 		};
+
+		// front end validation
+		const checkErrors = () => {
+			let error = false;
+			for (const key in form) {
+				if (form[key] === '' && key != 'image') {
+					error = true;
+					errors[key] = `please, type ${key}`;
+				}
+			}
+			return error;
+		};
+
+		const clearErrors = (inputFiled) => {
+			errors[inputFiled] = '';
+		};
+
 		return {
 			form,
 			handleClick,
 			handleImageUpload,
+			errors,
+			checkErrors,
+			clearErrors,
 		};
 	},
 };
